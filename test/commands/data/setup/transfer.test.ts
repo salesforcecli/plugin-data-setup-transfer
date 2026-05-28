@@ -1,3 +1,6 @@
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { TestContext, MockTestOrgData } from '@salesforce/core/testSetup';
 import { expect } from 'chai';
 import { stubSfCommandUx } from '@salesforce/sf-plugins-core';
@@ -96,6 +99,9 @@ describe('data setup transfer', () => {
     });
 
     it('throws error when both standard and custom definition flags are provided', async () => {
+      const tmpDefFile = path.join(os.tmpdir(), `test-definition-${Date.now()}.json`);
+      fs.writeFileSync(tmpDefFile, '{}', 'utf8');
+
       try {
         await SetupTransfer.run([
           '--definition-identifier',
@@ -103,7 +109,7 @@ describe('data setup transfer', () => {
           '--version',
           '1.0.0',
           '--extended-definition-file',
-          '/tmp/test-definition.json',
+          tmpDefFile,
           '--source-org',
           'source@test.org',
           '--target-org',
@@ -112,6 +118,8 @@ describe('data setup transfer', () => {
         expect.fail('Should have thrown an error');
       } catch (error) {
         expect((error as Error).message).to.include('Cannot use');
+      } finally {
+        fs.rmSync(tmpDefFile, { force: true });
       }
     });
   });
