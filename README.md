@@ -1,6 +1,7 @@
 # plugin-data-setup-transfer
 
-[NPM](https://www.npmjs.com/package/plugin-data-setup-transfer) [Downloads/week](https://npmjs.org/package/plugin-data-setup-transfer) [License](https://raw.githubusercontent.com/salesforcecli/plugin-data-setup-transfer/main/LICENSE.txt)
+[![NPM](https://img.shields.io/npm/v/plugin-data-setup-transfer.svg?label=plugin-data-setup-transfer)](https://www.npmjs.com/package/plugin-data-setup-transfer) [![Downloads/week](https://img.shields.io/npm/dw/plugin-data-setup-transfer.svg)](https://npmjs.org/package/plugin-data-setup-transfer) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-data-setup-transfer/main/LICENSE.txt)
+
 
 This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm).
 
