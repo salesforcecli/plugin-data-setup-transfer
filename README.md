@@ -2,49 +2,6 @@
 
 [![NPM](https://img.shields.io/npm/v/plugin-data-setup-transfer.svg?label=plugin-data-setup-transfer)](https://www.npmjs.com/package/plugin-data-setup-transfer) [![Downloads/week](https://img.shields.io/npm/dw/plugin-data-setup-transfer.svg)](https://npmjs.org/package/plugin-data-setup-transfer) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-data-setup-transfer/main/LICENSE.txt)
 
-## Using the template
-
-This repository provides a template for creating a plugin for the Salesforce CLI. To convert this template to a working plugin:
-
-1. Please get in touch with the Platform CLI team. We want to help you develop your plugin.
-2. Generate your plugin:
-
-   ```
-   sf plugins install dev
-   sf dev generate plugin
-
-   git init -b main
-   git add . && git commit -m "chore: initial commit"
-   ```
-
-3. Create your plugin's repo in the salesforcecli github org
-4. When you're ready, replace the contents of this README with the information you want.
-
-## Learn about `sf` plugins
-
-Salesforce CLI plugins are based on the [oclif plugin framework](<(https://oclif.io/docs/introduction.html)>). Read the [plugin developer guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_architecture_sf_cli.htm) to learn about Salesforce CLI plugin development.
-
-This repository contains a lot of additional scripts and tools to help with general Salesforce node development and enforce coding standards. You should familiarize yourself with some of the [node developer packages](#tooling) used by Salesforce. 
-
-Additionally, there are some additional tests that the Salesforce CLI will enforce if this plugin is ever bundled with the CLI. These test are included by default under the `posttest` script and it is required to keep these tests active in your plugin if you plan to have it bundled.
-
-### Tooling
-
-- [@salesforce/core](https://github.com/forcedotcom/sfdx-core)
-- [@salesforce/kit](https://github.com/forcedotcom/kit)
-- [@salesforce/sf-plugins-core](https://github.com/salesforcecli/sf-plugins-core)
-- [@salesforce/ts-types](https://github.com/forcedotcom/ts-types)
-- [@salesforce/ts-sinon](https://github.com/forcedotcom/ts-sinon)
-- [@salesforce/dev-config](https://github.com/forcedotcom/dev-config)
-- [@salesforce/dev-scripts](https://github.com/forcedotcom/dev-scripts)
-
-### Hooks
-
-For cross clouds commands, e.g. `sf env list`, we utilize [oclif hooks](https://oclif.io/docs/hooks) to get the relevant information from installed plugins.
-
-This plugin includes sample hooks in the [src/hooks directory](src/hooks). You'll just need to add the appropriate logic. You can also delete any of the hooks if they aren't required for your plugin.
-
-# Everything past here is only a suggestion as to what should be in your specific plugin's description
 
 This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm).
 
@@ -153,13 +110,11 @@ EXAMPLES
 FLAG DESCRIPTIONS
   -e, --extended-definition-file=<value>  Path to a JSON file containing a complete custom dataset definition.
 
-    Path to a JSON file containing a fully custom dataset definition. The file contents are used as the export API payload and the
-    definition headers are merged into the retrieved data before deploying to the target org.
+    Path to a JSON file containing a fully custom dataset definition.
 
   -i, --definition-identifier=<value>  The definition identifier for the standard dataset.
 
-    The unique identifier of the standard setup dataset definition (e.g., 'dipcmlargedefinition'). This value is sent as `dataSetName` in
-    the export API payload. Required when not using --extended-definition-file.
+    The unique identifier of the standard setup dataset definition (e.g., 'dipcmlargedefinition'). Required when not using --extended-definition-file.
 
   -o, --target-org=<value>  The target org alias or username to deploy data to.
 
@@ -175,12 +130,10 @@ FLAG DESCRIPTIONS
 
   -x, --filter-value=<value>  Comma-separated list of filter values for the export.
 
-    Optional comma-separated list of filter values to include in the export (e.g., 'autoSilver, autoRoot'). This value is sent as
-    `filterValue` in the export API payload.
+    Optional comma-separated list of filter values to include in the export (e.g., 'autoSilver, autoRoot').
 
   --api-version=<value>  API version to use for the connection.
 
     The Salesforce API version to use when connecting to the orgs. If not specified, uses the org's default API version.
 ```
 
-<!-- commandsstop -->
