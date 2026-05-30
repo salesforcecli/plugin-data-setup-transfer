@@ -137,6 +137,15 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
     }),
   };
 
+  private static readonly HTTP_TIMEOUT_MS = 20 * 60 * 1000;
+
+  private static isSocketHangUp(error: unknown): boolean {
+    const code = (error as { code?: unknown } | null)?.code;
+    if (code === 'ECONNRESET' || code === 'UND_ERR_SOCKET') return true;
+    const message = error instanceof Error ? error.message : String(error);
+    return /socket hang up|ECONNRESET/i.test(message);
+  }
+
   private static validateFlags(
     definitionIdentifier: string | undefined,
     version: string | undefined,
@@ -263,14 +272,22 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
       const instanceUrl = sourceConnection.instanceUrl ?? '';
       const fullUrl = `${instanceUrl}${exportApiPath}`;
 
-      const httpResponse = await fetch(fullUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sourceConnection.accessToken ?? ''}`,
-        },
-        body: JSON.stringify(exportPayload),
-      });
+      const exportAbort = new AbortController();
+      const exportTimeoutId = setTimeout(() => exportAbort.abort(), SetupTransfer.HTTP_TIMEOUT_MS);
+      let httpResponse: Response;
+      try {
+        httpResponse = await fetch(fullUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sourceConnection.accessToken ?? ''}`,
+          },
+          body: JSON.stringify(exportPayload),
+          signal: exportAbort.signal,
+        });
+      } finally {
+        clearTimeout(exportTimeoutId);
+      }
 
       const rawBody = await httpResponse.text();
 
@@ -317,14 +334,25 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
       this.spinner.status = messages.getMessage('info.callingImportApi');
       const targetApiVersion = targetConnection.version;
       const importApiPath = `/services/data/v${targetApiVersion}/connect/industries/setup/dataset/actions/import`;
-      const importResponse = await targetConnection.request<unknown>({
-        method: 'POST',
-        url: importApiPath,
-        body: JSON.stringify(importPayload),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      let importResponse: unknown = null;
+      try {
+        importResponse = await targetConnection.request<unknown>(
+          {
+            method: 'POST',
+            url: importApiPath,
+            body: JSON.stringify(importPayload),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+          { timeout: SetupTransfer.HTTP_TIMEOUT_MS }
+        );
+      } catch (importError) {
+        // Proxies/load balancers in front of scratch-org dataplane endpoints often close
+        // the connection at ~100–120s while the server is still processing, so the client
+        // sees ECONNRESET / "socket hang up" even when the import itself succeeded.
+        if (!SetupTransfer.isSocketHangUp(importError)) throw importError;
+      }
 
       this.spinner.stop();
       this.log(messages.getMessage('info.success'));
