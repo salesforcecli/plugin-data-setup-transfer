@@ -11,14 +11,10 @@
     "@oclif/plugin-command-snapshot": "^5.3.22",
     "@salesforce/cli-plugins-testkit": "^5.3.58",
     "@salesforce/dev-scripts": "^11.0.4",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^25.9.1",
     "eslint-plugin-sf-plugin": "^1.20.33",
-    "husky": "^9.1.7",
     "oclif": "^4.23.8",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3",
-    "wireit": "^0.14.12"
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -38,7 +34,7 @@
     "sfdx",
     "sfdx-plugin"
   ],
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "sf",
@@ -47,8 +43,14 @@
       "@oclif/plugin-help"
     ],
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
+      "data": {
+        "description": "Manage records in your org.",
+        "subtopics": {
+          "setup": {
+            "description": "Retrieve setup data from one org and deploy it to another."
+          }
+        },
+        "external": true
       }
     },
     "flexibleTaxonomy": true
@@ -59,12 +61,14 @@
     "clean-all": "sf-clean all",
     "compile": "wireit",
     "docs": "sf-docs",
+    "fix-license": "eslint src test --fix --rule \"header/header: [2]\"",
     "format": "wireit",
     "link-check": "wireit",
     "lint": "wireit",
     "postinstall": "yarn husky install",
     "postpack": "sf-clean --ignore-signing-artifacts",
     "prepack": "sf-prepack",
+    "prepare": "sf-install",
     "test": "wireit",
     "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
     "test:only": "wireit",
@@ -133,8 +137,7 @@
     "test:only": {
       "command": "nyc mocha \"test/**/*.test.ts\"",
       "env": {
-        "FORCE_COLOR": "2",
-        "TS_NODE_PROJECT": "test/tsconfig.json"
+        "FORCE_COLOR": "2"
       },
       "files": [
         "test/**/*.ts",
@@ -176,7 +179,7 @@
       "output": []
     },
     "link-check": {
-      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|localhost|%s\" --markdown --retry --directory-listing --verbosity error",
       "files": [
         "./*.md",
         "./!(CHANGELOG).md",
