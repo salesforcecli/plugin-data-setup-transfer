@@ -269,38 +269,18 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
       this.spinner.status = messages.getMessage('info.callingExportApi');
       const sourceApiVersion = sourceConnection.version;
       const exportApiPath = `/services/data/v${sourceApiVersion}/connect/industries/setup/dataset/actions/export`;
-      const instanceUrl = sourceConnection.instanceUrl ?? '';
-      const fullUrl = `${instanceUrl}${exportApiPath}`;
 
-      const exportAbort = new AbortController();
-      const exportTimeoutId = setTimeout(() => exportAbort.abort(), SetupTransfer.HTTP_TIMEOUT_MS);
-      let httpResponse: Response;
-      try {
-        httpResponse = await fetch(fullUrl, {
+      const exportResponse = await sourceConnection.request<ExportResponse>(
+        {
           method: 'POST',
+          url: exportApiPath,
+          body: JSON.stringify(exportPayload),
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${sourceConnection.accessToken ?? ''}`,
           },
-          body: JSON.stringify(exportPayload),
-          signal: exportAbort.signal,
-        });
-      } finally {
-        clearTimeout(exportTimeoutId);
-      }
-
-      const rawBody = await httpResponse.text();
-
-      if (!httpResponse.ok) {
-        throw new Error(`Export API returned ${httpResponse.status}: ${rawBody}`);
-      }
-
-      // eslint-disable-next-line no-control-regex
-      const sanitizedBody = rawBody.replace(/[\x00-\x1F\x7F]/g, (ch) =>
-        ch === '\n' || ch === '\r' || ch === '\t' ? ch : ''
+        },
+        { timeout: SetupTransfer.HTTP_TIMEOUT_MS }
       );
-
-      const exportResponse = JSON.parse(sanitizedBody) as ExportResponse;
 
       const errors = exportResponse.errors as Array<{ message?: string }> | undefined;
       if (exportResponse.isSuccess === false) {
