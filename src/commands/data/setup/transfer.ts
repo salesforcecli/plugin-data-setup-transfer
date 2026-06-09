@@ -21,7 +21,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages, Connection, Org } from '@salesforce/core';
 
 Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
-const messages = Messages.loadMessages('plugin-data-setup-transfer', 'data.setup.transfer');
+const messages = Messages.loadMessages('@salesforce/plugin-data-setup-transfer', 'data.setup.transfer');
 
 type DefinitionForeignKey = {
   field: string;

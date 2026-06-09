@@ -1,5 +1,5 @@
 {
-  "name": "plugin-data-setup-transfer",
+  "name": "@salesforce/plugin-data-setup-transfer",
   "description": "Transfer setup data from one org to another in a single step",
   "version": "1.0.1",
   "dependencies": {
