@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/plugin-data-setup-transfer",
   "description": "Transfer setup data from one org to another in a single step",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "dependencies": {
     "@oclif/core": "^4.11.4",
     "@salesforce/core": "^8.31.0",
