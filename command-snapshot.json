@@ -1,0 +1,20 @@
+[
+  {
+    "alias": [],
+    "command": "data:setup:transfer",
+    "flagAliases": [],
+    "flagChars": ["e", "i", "o", "s", "v", "x"],
+    "flags": [
+      "api-version",
+      "definition-identifier",
+      "extended-definition-file",
+      "filter-value",
+      "flags-dir",
+      "json",
+      "source-org",
+      "target-org",
+      "version"
+    ],
+    "plugin": "plugin-data-setup-transfer"
+  }
+]

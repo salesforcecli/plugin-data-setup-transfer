@@ -40,16 +40,12 @@ describe('data setup transfer', () => {
     sfCommandStubs = stubSfCommandUx($$.SANDBOX);
     await $$.stubAuths(mockSourceOrg, mockTargetOrg);
 
-    // Stub fetch for export API
-    $$.SANDBOX.stub(global, 'fetch').resolves({
-      ok: true,
-      status: 200,
-      text: async () => JSON.stringify(mockExportResponse),
-    } as Response);
-
-    // Stub connection.request for import API
-    const targetConnection = await mockTargetOrg.getConnection();
-    targetConnection.request = $$.SANDBOX.stub().resolves(mockImportResponse);
+    $$.fakeConnectionRequest = (request) => {
+      if (typeof request === 'string' || (request as { url: string }).url.includes('/export')) {
+        return Promise.resolve(mockExportResponse);
+      }
+      return Promise.resolve(mockImportResponse);
+    };
   });
 
   afterEach(() => {
@@ -171,21 +167,15 @@ describe('data setup transfer', () => {
 
   describe('error handling', () => {
     it('throws error when export API returns error', async () => {
-      $$.SANDBOX.restore();
-      await $$.stubAuths(mockSourceOrg, mockTargetOrg);
-
-      $$.SANDBOX.stub(global, 'fetch').resolves({
-        ok: true,
-        status: 200,
-        text: async () =>
-          JSON.stringify({
+      $$.fakeConnectionRequest = (request) => {
+        if (typeof request === 'string' || (request as { url: string }).url.includes('/export')) {
+          return Promise.resolve({
             isSuccess: false,
             errors: [{ message: 'Invalid definition identifier' }],
-          }),
-      } as Response);
-
-      const targetConnection = await mockTargetOrg.getConnection();
-      targetConnection.request = $$.SANDBOX.stub().resolves(mockImportResponse);
+          });
+        }
+        return Promise.resolve(mockImportResponse);
+      };
 
       try {
         await SetupTransfer.run([
@@ -205,18 +195,13 @@ describe('data setup transfer', () => {
       }
     });
 
-    it('throws error when export API returns non-200 status', async () => {
-      $$.SANDBOX.restore();
-      await $$.stubAuths(mockSourceOrg, mockTargetOrg);
-
-      $$.SANDBOX.stub(global, 'fetch').resolves({
-        ok: false,
-        status: 400,
-        text: async () => 'Bad Request',
-      } as Response);
-
-      const targetConnection = await mockTargetOrg.getConnection();
-      targetConnection.request = $$.SANDBOX.stub().resolves(mockImportResponse);
+    it('throws error when export API request fails', async () => {
+      $$.fakeConnectionRequest = (request) => {
+        if (typeof request === 'string' || (request as { url: string }).url.includes('/export')) {
+          return Promise.reject(new Error('REQUEST_FAILED: Bad Request'));
+        }
+        return Promise.resolve(mockImportResponse);
+      };
 
       try {
         await SetupTransfer.run([
@@ -231,7 +216,7 @@ describe('data setup transfer', () => {
         ]);
         expect.fail('Should have thrown an error');
       } catch (error) {
-        expect((error as Error).message).to.include('Export API returned 400');
+        expect((error as Error).message).to.include('REQUEST_FAILED');
       }
     });
   });
