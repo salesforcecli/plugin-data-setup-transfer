@@ -10,7 +10,8 @@ We always recommend using the latest version of these commands bundled with the 
 ## Install
 
 ```bash
-sf plugins install plugin-data-setup-transfer@x.y.z
+sf plugins install @salesforce/plugin-data-setup-transfer (latest version)
+sf plugins install @salesforce/plugin-data-setup-transfer@x.y.z (specific version)
 ```
 
 ## Issues
@@ -25,7 +26,7 @@ Please report any issues at https://github.com/forcedotcom/cli/issues
    let you know if there is already an effort in progress.
 3. Fork this repository.
 4. [Build the plugin locally](#build)
-5. Create a _topic_ branch in your fork. Note, this step is recommended but technically not required if contributing using a fork.
+5. Create a *topic* branch in your fork. Note, this step is recommended but technically not required if contributing using a fork.
 6. Edit the code in your fork.
 7. Write appropriate tests for your changes. Try to achieve at least 95% code coverage on any new code. No pull request will be accepted without unit tests.
 8. Sign CLA (see [CLA](#cla) below).
@@ -65,9 +66,6 @@ sf plugins
 ```
 
 ## Commands
-
-<!-- commands -->
-* [`sf data setup transfer`](#sf-data-setup-transfer)
 
 ## `sf data setup transfer`
 
@@ -135,80 +133,15 @@ FLAG DESCRIPTIONS
 
   -x, --filter-value=<value>  Comma-separated list of filter values for the export.
 
-    Optional comma-separated list of filter values to include in the export (e.g., 'autoSilver, autoRoot'). This value
-    is sent as `filterValue` in the export API payload.
+    Comma-separated list of filter values to include in the export (e.g., 'autoSilver, autoRoot').
+    This value is sent as `filterValue` in the export API payload.
+    The {SET_FILTER} placeholder is a special token in the filter criteria in the dataset definition.
+    Behavior:
+    Without {SET_FILTER}: This flag is optional
+    With {SET_FILTER}: This flag becomes required
 
   --api-version=<value>  API version to use for the connection.
 
     The Salesforce API version to use when connecting to the orgs. If not specified, uses the org's default API version.
 ```
-<!-- commandsstop -->
 
-- [`sf data setup transfer`](#sf-data-setup-transfer)
-
-## `sf data setup transfer`
-
-Retrieve setup data from one org and deploy it to another in a single step.
-
-```
-USAGE
-  $ sf data setup transfer -s <value> -o <value> [--json] [--flags-dir <value>] [-i <value>] [-v <value>] [-e
-    <value>] [-x <value>] [--api-version <value>]
-
-FLAGS
-  -e, --extended-definition-file=<value>  Path to a JSON file containing a complete custom dataset definition.
-  -i, --definition-identifier=<value>     The definition identifier for the standard dataset.
-  -o, --target-org=<value>                (required) The target org alias or username to deploy data to.
-  -s, --source-org=<value>                (required) The source org alias or username to retrieve data
-                                          from.
-  -v, --version=<value>                   The version of the standard dataset.
-  -x, --filter-value=<value>              Comma-separated list of filter values for the export.
-      --api-version=<value>               API version to use for the connection.
-
-GLOBAL FLAGS
-  --flags-dir=<value>  Import flag values from a directory.
-  --json               Format output as json.
-
-DESCRIPTION
-  Retrieve setup data from one org and deploy it to another in a single step.
-
-  Combines retrieve and deploy into one command: exports setup data from a source org using the Connect API, then imports it into a target
-  org. Supports two modes: (1) Standard dataset definition — provide a definition identifier and version. (2) Custom dataset definition —
-  provide a complete custom definition file via --extended-definition-file.
-
-EXAMPLES
-  Retrieve and deploy using a standard dataset definition:
-  $ sf data setup transfer --definition-identifier dipcmlargedefinition --version 1.0.0 --source-org sourceOrg --filter-value 'autoSilver' --target-org targetOrg
-
-  Retrieve and deploy using a custom dataset definition file:
-  $ sf data setup transfer --extended-definition-file definition/dipcmlargedefinition-extension.json --source-org sourceOrg --filter-value 'autoSilver' --target-org targetOrg
-
-FLAG DESCRIPTIONS
-  -e, --extended-definition-file=<value>  Path to a JSON file containing a complete custom dataset definition.
-
-    Path to a JSON file containing a fully custom dataset definition.
-
-  -i, --definition-identifier=<value>  The definition identifier for the standard dataset.
-
-    The unique identifier of the standard setup dataset definition (e.g., 'dipcmlargedefinition'). Required when not using --extended-definition-file.
-
-  -o, --target-org=<value>  The target org alias or username to deploy data to.
-
-    The Salesforce org where the setup data will be deployed. Can be an org alias or username.
-
-  -s, --source-org=<value>  The source org alias or username to retrieve data from.
-
-    The Salesforce org from which to retrieve the setup data. Can be an org alias or username.
-
-  -v, --version=<value>  The version of the standard dataset.
-
-    The version string for the standard dataset definition (e.g., '1.0.0'). Required when not using --extended-definition-file.
-
-  -x, --filter-value=<value>  Comma-separated list of filter values for the export.
-
-    Optional comma-separated list of filter values to include in the export (e.g., 'autoSilver, autoRoot').
-
-  --api-version=<value>  API version to use for the connection.
-
-    The Salesforce API version to use when connecting to the orgs. If not specified, uses the org's default API version.
-```
