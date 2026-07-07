@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/plugin-data-setup-transfer.svg?label=plugin-data-setup-transfer)](https://www.npmjs.com/package/plugin-data-setup-transfer) [![Downloads/week](https://img.shields.io/npm/dw/plugin-data-setup-transfer.svg)](https://npmjs.org/package/plugin-data-setup-transfer) [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://opensource.org/license/apache-2-0)
 
 
-This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm).
+This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm). For more information on this plugin, read the [user guide](doc/data-transfer-user-guide.md).
 
 We always recommend using the latest version of these commands bundled with the CLI, however, you can install a specific version or tag if needed.
 
