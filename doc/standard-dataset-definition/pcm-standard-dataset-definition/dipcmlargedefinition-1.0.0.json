@@ -1,0 +1,449 @@
+{
+  "dataSetName": "dipcmlargedefinition",
+  "version": "1.0.0",
+  "exportSequence": {
+    "list": [
+      "Product2",
+      "ProductComponentGroup",
+      "ProductRelatedComponent",
+      "ProductSellingModelOption",
+      "PricebookEntry",
+      "ProductAttributeDefinition",
+      "ProductCategoryProduct",
+      "ProductClassification",
+      "ProductSellingModel",
+      "ProductCategory",
+      "ProductClassificationAttr",
+      "AttributeCategory",
+      "AttributeDefinition",
+      "AttributePicklist",
+      "AttributePicklistValue",
+      "AttributeCategoryAttribute",
+      "ProductCatalog",
+      "Pricebook2"
+    ]
+  },
+  "importSequence": {
+    "list": [
+      "AttributePicklist",
+      "AttributePicklistValue",
+      "AttributeCategory",
+      "AttributeDefinition",
+      "AttributeCategoryAttribute",
+      "ProductClassification",
+      "ProductCatalog",
+      "ProductCategory",
+      "ProductSellingModel",
+      "Pricebook2",
+      "Product2",
+      "ProductComponentGroup",
+      "ProductRelatedComponent",
+      "ProductClassificationAttr",
+      "ProductAttributeDefinition",
+      "ProductCategoryProduct",
+      "ProductSellingModelOption",
+      "PricebookEntry"
+    ]
+  },
+  "objects": {
+    "list": [
+      {
+        "objectName": "Product2",
+        "globalKeyField": "ProductCode",
+        "fields": "AvailabilityDate, BasedOn.Code, Name, ProductCode",
+        "filterCriteria": "ProductCode IN ({SET_FILTER})",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "BasedOn",
+              "targetObject": "ProductClassification",
+              "lookupField": "BasedOnId",
+              "globalKeyField": "Code"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductComponentGroup",
+        "globalKeyField": "Code",
+        "fields": "Name, Code, ParentProductId, ParentGroupId",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "ParentProduct",
+              "targetObject": "Product2",
+              "lookupField": "ParentProductId",
+              "globalKeyField": "ProductCode"
+            },
+            {
+              "field": "ParentGroup",
+              "targetObject": "ProductComponentGroup",
+              "lookupField": "ParentGroupId",
+              "globalKeyField": "Code"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductRelatedComponent",
+        "compositeKeys": {
+          "list": [
+            "ParentProduct.ProductCode",
+            "ProductComponentGroup.Code",
+            "ProductRelationshipType.Name",
+            "ChildProduct.ProductCode",
+            "ChildProductClassification.Code"
+          ]
+        },
+        "fields": "ParentProductId, ChildProductId, ChildProductClassificationId, ParentSellingModelId, ChildSellingModelId, ProductComponentGroupId, Quantity, Sequence, IsComponentRequired, IsDefaultComponent, IsQuantityEditable, DoesBundlePriceIncludeChild, MinQuantity, MaxQuantity, QuantityScaleMethod",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "ParentProduct",
+              "targetObject": "Product2",
+              "lookupField": "ParentProductId",
+              "globalKeyField": "ProductCode"
+            },
+            {
+              "field": "ChildProduct",
+              "targetObject": "Product2",
+              "lookupField": "ChildProductId",
+              "globalKeyField": "ProductCode"
+            },
+            {
+              "field": "ProductComponentGroup",
+              "targetObject": "ProductComponentGroup",
+              "lookupField": "ProductComponentGroupId",
+              "globalKeyField": "Code"
+            },
+            {
+              "field": "ChildProductClassification",
+              "targetObject": "ProductClassification",
+              "lookupField": "ChildProductClassificationId",
+              "globalKeyField": "Code"
+            },
+            {
+              "field": "ParentSellingModel",
+              "targetObject": "ProductSellingModel",
+              "lookupField": "ParentSellingModelId",
+              "globalKeyField": "Name"
+            },
+            {
+              "field": "ChildSellingModel",
+              "targetObject": "ProductSellingModel",
+              "lookupField": "ChildSellingModelId",
+              "globalKeyField": "Name"
+            },
+            {
+              "targetObject": "ProductRelationshipType",
+              "field": "ProductRelationshipType",
+              "globalKeyField": "Name",
+              "lookupField": "ProductRelationshipTypeId"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductSellingModelOption",
+        "compositeKeys": {
+          "list": [
+            "Product2.ProductCode",
+            "ProductSellingModel.Name"
+          ]
+        },
+        "fields": "ProductSellingModelId, Product2Id, IsDefault",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "Product2",
+              "targetObject": "Product2",
+              "lookupField": "Product2Id",
+              "globalKeyField": "ProductCode"
+            },
+            {
+              "field": "ProductSellingModel",
+              "targetObject": "ProductSellingModel",
+              "lookupField": "ProductSellingModelId",
+              "globalKeyField": "Name"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductAttributeDefinition",
+        "compositeKeys": {
+          "list": [
+            "Product2.ProductCode",
+            "AttributeDefinition.DeveloperName",
+            "ProductClassificationAttribute.ProductClassification.Code",
+            "ProductClassificationAttribute.AttributeDefinition.DeveloperName"
+          ]
+        },
+        "fields": "Product2Id, AttributeDefinitionId, ProductClassificationAttributeId",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "Product2",
+              "targetObject": "Product2",
+              "lookupField": "Product2Id",
+              "globalKeyField": "ProductCode"
+            },
+
+            {
+              "field": "OverriddenProductAttributeDefinition",
+              "targetObject": "ProductAttributeDefinition",
+              "lookupField": "OverriddenProductAttributeDefinitionId"
+            },
+            {
+              "field": "AttributeDefinition",
+              "targetObject": "AttributeDefinition",
+              "lookupField": "AttributeDefinitionId",
+              "globalKeyField": "DeveloperName"
+            },
+            {
+              "field": "AttributeCategory",
+              "targetObject": "AttributeCategory",
+              "lookupField": "AttributeCategoryId",
+              "globalKeyField": "Code"
+            },
+            {
+              "field": "ProductClassificationAttribute",
+              "targetObject": "ProductClassificationAttr",
+              "lookupField": "ProductClassificationAttributeId"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductCategoryProduct",
+        "compositeKeys": {
+          "list": [
+            "Product.ProductCode",
+            "ProductCategory.Code"
+          ]
+        },
+        "fields": "ProductCategoryId, ProductId",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "Product",
+              "targetObject": "Product2",
+              "lookupField": "ProductId",
+              "globalKeyField": "ProductCode"
+            },
+            {
+              "field": "ProductCategory",
+              "targetObject": "ProductCategory",
+              "lookupField": "ProductCategoryId",
+              "globalKeyField": "Code"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "PricebookEntry",
+        "compositeKeys": {
+          "list": [
+            "Product2.ProductCode",
+            "ProductSellingModel.Name",
+            "Pricebook2.Name"
+          ]
+        },
+        "fields": "Pricebook2Id, Product2Id, UnitPrice, IsActive, UseStandardPrice",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "Product2",
+              "targetObject": "Product2",
+              "lookupField": "Product2Id",
+              "globalKeyField": "ProductCode"
+            },
+            {
+              "field": "ProductSellingModel",
+              "targetObject": "ProductSellingModel",
+              "lookupField": "ProductSellingModelId",
+              "globalKeyField": "Name"
+            },
+            {
+              "field": "Pricebook2",
+              "targetObject": "Pricebook2",
+              "lookupField": "Pricebook2Id",
+              "globalKeyField": "Name"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductClassification",
+        "globalKeyField": "Code",
+        "fields": "Name, Code, Status",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "ParentProductClassification",
+              "targetObject": "ProductClassification",
+              "lookupField": "ParentProductClassificationId",
+              "globalKeyField": "Code"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductSellingModel",
+        "globalKeyField": "Name",
+        "fields": "Name, SellingModelType, PricingTerm, PricingTermUnit, Status, DoesAutoRenewAssetByDefault",
+        "filterCriteria": "",
+        "foreignKeys": { "list": [] }
+      },
+      {
+        "objectName": "ProductCategory",
+        "globalKeyField": "Code",
+        "fields": "Name, Code, CatalogId, ParentCategoryId, Description, SortOrder, IsNavigational",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "ParentCategory",
+              "targetObject": "ProductCategory",
+              "lookupField": "ParentCategoryId",
+              "globalKeyField": "Code"
+            },
+            {
+              "field": "Catalog",
+              "targetObject": "ProductCatalog",
+              "lookupField": "CatalogId",
+              "globalKeyField": "Code"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "Pricebook2",
+        "globalKeyField": "Name",
+        "fields": "Name, IsActive, Description",
+        "filterCriteria": "",
+        "foreignKeys": { "list": [] }
+      },
+      {
+        "objectName": "AttributeDefinition",
+        "globalKeyField": "DeveloperName",
+        "fields": "Name, Code, DeveloperName, Label, Description, DataType",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "Picklist",
+              "targetObject": "AttributePicklist",
+              "lookupField": "PicklistId",
+              "globalKeyField": "Name"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "AttributeCategory",
+        "globalKeyField": "Code",
+        "fields": "Name",
+        "filterCriteria": "",
+        "foreignKeys": { "list": [] }
+      },
+      {
+        "objectName": "ProductClassificationAttr",
+        "compositeKeys": {
+          "list": [
+            "ProductClassification.Code",
+            "AttributeDefinition.DeveloperName"
+          ]
+        },
+        "fields": "AttributeDefinitionId",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "ProductClassification",
+              "targetObject": "ProductClassification",
+              "lookupField": "ProductClassificationId",
+              "globalKeyField": "Code"
+            },
+            {
+              "field": "AttributeDefinition",
+              "targetObject": "AttributeDefinition",
+              "lookupField": "AttributeDefinitionId",
+              "globalKeyField": "DeveloperName"
+            },
+            {
+              "field": "AttributeCategory",
+              "targetObject": "AttributeCategory",
+              "lookupField": "AttributeCategoryId",
+              "globalKeyField": "Code"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "ProductCatalog",
+        "globalKeyField": "Code",
+        "fields": "Name, Code, Description, CatalogType, EffectiveStartDate, EffectiveEndDate",
+        "filterCriteria": "",
+        "foreignKeys": { "list": [] }
+      },
+      {
+        "objectName": "AttributePicklist",
+        "globalKeyField": "Name",
+        "fields": "Name",
+        "filterCriteria": "",
+        "foreignKeys": { "list": [] }
+      },
+      {
+        "objectName": "AttributePicklistValue",
+        "globalKeyField": "Code",
+        "fields": "Name, Code, PicklistId, Value",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "Picklist",
+              "targetObject": "AttributePicklist",
+              "lookupField": "PicklistId",
+              "globalKeyField": "Name"
+            }
+          ]
+        }
+      },
+      {
+        "objectName": "AttributeCategoryAttribute",
+        "compositeKeys": {
+          "list": [
+            "AttributeDefinition.DeveloperName",
+            "AttributeCategory.Code"
+          ]
+        },
+        "fields": "AttributeCategoryId, AttributeDefinitionId",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": [
+            {
+              "field": "AttributeCategory",
+              "targetObject": "AttributeCategory",
+              "lookupField": "AttributeCategoryId",
+              "globalKeyField": "Code"
+            },
+            {
+              "field": "AttributeDefinition",
+              "targetObject": "AttributeDefinition",
+              "lookupField": "AttributeDefinitionId",
+              "globalKeyField": "DeveloperName"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
