@@ -553,15 +553,13 @@ When a foreign key field references more than one object type (polymorphic), you
 
 **Best Practices**:
 
-- Include all fields necessary for business logic  
-- Include fields used in relationships (e.g., ParentProductId)  
-- Use dot-notation for parent field references (e.g., BasedOn.Code)  
-- Avoid including unnecessary fields to reduce data transfer size
+- Do NOT specify fields unless there is a special reason.
+- This tool will include all not-null fields that the authenticated user running the tool can access.
 
 **Example**:
 
 ```
-"fields": "Name, Code, ParentProductId, BasedOn.Code, Description"
+"fields": ""
 ```
 
 **9. Empty Filter Criteria**
@@ -1087,11 +1085,45 @@ sf data setup transfer \
 ## Frequently Asked Questions
 
 **Q:** The global key has an empty value. What should I do?  
-**A:** If a global key (for example, the `Code` field of `ProductComponentGroup`) is empty, update the value in the source org and rerun the CLI command. If the issue persists, investigate whether the problem exists in the source org or the target org. Open the `tmp/setup-transfer-payload.json` file in the directory from which you ran the CLI command. This file contains the exported data merged with the data set definition to identify the missing or incorrect values.  
+**A:** If a global key (for example, the `Code` field of `ProductComponentGroup`) is empty, update the value in the source org and rerun the CLI command. 
+
 **Q:** How to identify the issue is in source org or target org?  
-**A:** In the folder from which the CLI command is run, look for the tmp`/setup-transfer-payload.json` file. This file has the exported data combined with the data set definition.  
+**A:** In the folder from which the CLI command is run, look for the tmp`/setup-transfer-payload.json` file. This file has the exported data.  
+
 **Q:** Does the tool delete a record in the target org?  
 **A:** No
+
+**Q:** Objects in a managed package.
+**A:** The namespace prefix must be added to custom objects/fields in the dataset definition. Ex: "devopsimpkg15__" is the namespace prefix.
+```
+{
+  "dataSetName": "custom-object-managed-package",
+  "version": "1.0.0",
+  "exportSequence": {
+    "list": [
+      "devopsimpkg15__AdminTabLayout__c"
+    ]
+  },
+  "importSequence": {
+    "list": [
+      "devopsimpkg15__AdminTabLayout__c"
+    ]
+  },
+  "objects": {
+    "list": [
+      {
+        "objectName": "devopsimpkg15__AdminTabLayout__c",
+        "globalKeyField": "Name",
+        "fields": "Name",
+        "filterCriteria": "",
+        "foreignKeys": {
+          "list": []
+        }
+      }
+    ]
+  }
+}
+```
 
 ## **Additional Resources**
 
