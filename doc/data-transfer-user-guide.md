@@ -1125,6 +1125,36 @@ sf data setup transfer \
 }
 ```
 
+**Q:** Will this plugin create custom objects and fields in the target org?
+**A:** Custom objects and fields are not created by this plugin. Please use Salesforce Platform CLI to retrieve them from the source org and deploy them to the target org.
+
+**Q:** Why do I get this error message?
+Setup transfer operation failed: {"errors":[{"code":"UNKNOWN_EXCEPTION","message":"Failed to import data: DML save failed for entity ProductClassificationAttr: [We couldn't find the reference object and field. Ask your Salesforce admin for help.] [We couldn't find the reference object and field. Ask your Salesforce admin for help.]"}]}
+**A:** The Picklist values (Account, Contact, Asset) for ReferenceObject field of object ProductClassificationAttr are not created by this plugin. They need to be created manually in the target org. Go to Setup -> Object Manager -> ProductClassificationAttr -> click ReferenceObject field -> Add Picklist values: Account, Contact, Asset
+ReferenceObject and ReferenceFieldApiName are required by the extended attributes configuration.
+
+Example of the exported records of ProductClassificationAttr from the source org:
+```
+{
+  "Status": "Active",
+  "IsHidden": false,
+  "AttributeNameOverride": "Model",
+  "AttributeCategory.Code": "Auto Information",
+  "AttributeDefinition.DeveloperName": "Model",
+  "CurrencyIsoCode": "USD",
+  "Name": "Model",
+  "ReferenceObject": "Asset",
+  "ReferenceFieldApiName": "Model__c",
+  "IsRequired": false,
+  "ProductClassification.Code": "Auto",
+  "IsPriceImpacting": false,
+  "IsReadOnly": true
+}
+```
+
+**Q:** Some objects (ex: Contract, FulfillmentStepDefinitionGroup) do not have a natural key field which can uniquly identify a record.
+**A:** Create a custom field (ex: GlobalKey__c) and use it as "globalKeyField" in the custom dataset definition.
+
 ## **Additional Resources**
 
 - **GitHub Repository**: [plugin-data-setup-transfer](https://github.com/salesforcecli/plugin-data-setup-transfer/tree/main)  
