@@ -1155,6 +1155,14 @@ Example of the exported records of ProductClassificationAttr from the source org
 **Q:** Some objects (ex: Contract, FulfillmentStepDefinitionGroup) do not have a natural key field which can uniquly identify a record.
 **A:** Create a custom field (ex: GlobalKey__c) and use it as "globalKeyField" in the custom dataset definition.
 
+**Q:** Why do I get this error?
+{"errors":[{"code":"FIELD_NOT_ACCESSIBLE","message":"You don&#39;t have permission to access the ShouldAttachInvoiceDocToEmail field on the LegalEntity object. Your Salesforce admin can help with that."}]}
+**A:** Please assign FLS to the ShouldAttachInvoiceDocToEmail field of the LegalEntity object.
+
+**Q:** Why do I get this error?
+Error (1): Setup transfer operation failed: {"errors":[{"code":"UNKNOWN_EXCEPTION","message":"Failed to import data: Failed to get object Id for object devopsimpkg15__AdminTabLayout__c: sObject type &#39;devopsimpkg15__AdminTabLayout__c&#39; is not supported. If you are attempting to use a custom object, be sure to append the &#39;__c&#39; after the entity name. Please reference your WSDL or the describe call for the appropriate names."}]}
+**A:** create custom object devopsimpkg15__AdminTabLayout__c on the target org. Please note "devopsimpkg15__" is the package namespace prefix.
+
 ## **Additional Resources**
 
 - **GitHub Repository**: [plugin-data-setup-transfer](https://github.com/salesforcecli/plugin-data-setup-transfer/tree/main)  
