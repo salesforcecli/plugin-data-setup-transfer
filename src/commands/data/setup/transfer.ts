@@ -1,6 +1,5 @@
 /*
- * Copyright 2026, Salesforce, Inc.
- * SPDX-License-Identifier: Apache-2
+ * Copyright 2025, Salesforce, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -250,7 +249,7 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
         this.spinner.status = messages.getMessage('info.readingDefinition');
         const fileContent = fs.readFileSync(extendedDefinitionFile, 'utf8');
         customDefinition = JSON.parse(fileContent) as DefinitionFile;
-        exportPayload = { ...customDefinition } as Record<string, unknown>;
+        exportPayload = { ...customDefinition };
 
         if (filterValue) {
           exportPayload.filterValue = filterValue;
