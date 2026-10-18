@@ -165,6 +165,85 @@ describe('data setup transfer', () => {
     });
   });
 
+  describe('custom definition mode', () => {
+    it('includes every definition object in the import payload even without a data record', async () => {
+      // Definition declares two objects; export only returns data for Account.
+      const definition = {
+        dataSetName: 'customDefinition',
+        version: '1.0.0',
+        importSequence: { list: ['Account', 'Contact'] },
+        objects: {
+          list: [
+            {
+              objectName: 'Account',
+              globalKeyField: 'Name',
+              fields: 'Id, Name',
+              filterCriteria: '',
+              foreignKeys: { list: [] },
+            },
+            {
+              objectName: 'Contact',
+              globalKeyField: 'Email',
+              fields: 'Id, Email',
+              filterCriteria: '',
+              foreignKeys: { list: [] },
+            },
+          ],
+        },
+      };
+
+      const defFile = path.join(os.tmpdir(), `custom-definition-${Date.now()}.json`);
+      fs.writeFileSync(defFile, JSON.stringify(definition), 'utf8');
+
+      let importPayload:
+        | { objects: Array<{ objectName: string; records: unknown[]; recordCount?: number }> }
+        | undefined;
+      $$.fakeConnectionRequest = (request) => {
+        if (typeof request === 'string' || (request as { url: string }).url.includes('/export')) {
+          // Export returns data for Account only — Contact has no records.
+          return Promise.resolve({
+            isSuccess: true,
+            metadata: { dataSetName: 'customDefinition', version: '1.0.0' },
+            objects: [
+              {
+                objectName: 'Account',
+                recordCount: 1,
+                records: [{ Id: '001xx000000001', Name: 'Test Account 1' }],
+              },
+            ],
+          });
+        }
+        importPayload = JSON.parse((request as { body: string }).body) as typeof importPayload;
+        return Promise.resolve(mockImportResponse);
+      };
+
+      try {
+        await SetupTransfer.run([
+          '--extended-definition-file',
+          defFile,
+          '--source-org',
+          'source@test.org',
+          '--target-org',
+          'target@test.org',
+        ]);
+      } finally {
+        fs.rmSync(defFile, { force: true });
+      }
+
+      expect(importPayload).to.exist;
+      const objectNames = importPayload!.objects.map((o) => o.objectName);
+      expect(objectNames).to.deep.equal(['Account', 'Contact']);
+
+      const contact = importPayload!.objects.find((o) => o.objectName === 'Contact');
+      expect(contact!.records).to.deep.equal([]);
+      expect(contact!.recordCount).to.equal(0);
+
+      const account = importPayload!.objects.find((o) => o.objectName === 'Account');
+      expect(account!.records).to.have.lengthOf(1);
+      expect(account!.recordCount).to.equal(1);
+    });
+  });
+
   describe('error handling', () => {
     it('throws error when export API returns error', async () => {
       $$.fakeConnectionRequest = (request) => {
