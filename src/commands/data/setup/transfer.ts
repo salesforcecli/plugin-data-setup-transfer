@@ -250,7 +250,7 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
         this.spinner.status = messages.getMessage('info.readingDefinition');
         const fileContent = fs.readFileSync(extendedDefinitionFile, 'utf8');
         customDefinition = JSON.parse(fileContent) as DefinitionFile;
-        exportPayload = { ...customDefinition } as Record<string, unknown>;
+        exportPayload = { ...customDefinition };
 
         if (filterValue) {
           exportPayload.filterValue = filterValue;
@@ -345,7 +345,7 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
     } catch (error) {
       this.spinner.stop();
       const errorMessage = error instanceof Error ? error.message : String(error);
-      throw new Error(messages.getMessage('errors.transferFailed', [errorMessage]));
+      throw new Error(messages.getMessage('errors.transferFailed', [errorMessage]), { cause: error });
     }
   }
 }
