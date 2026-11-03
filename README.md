@@ -144,4 +144,3 @@ FLAG DESCRIPTIONS
 
     The Salesforce API version to use when connecting to the orgs. If not specified, uses the org's default API version.
 ```
-
