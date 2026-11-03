@@ -197,5 +197,8 @@
   },
   "exports": "./lib/index.js",
   "type": "module",
-  "author": "John Chen"
+  "author": "John Chen",
+  "repository": "salesforcecli/plugin-data-setup-transfer",
+  "homepage": "https://github.com/salesforcecli/plugin-data-setup-transfer",
+  "bugs": "https://github.com/forcedotcom/cli/issues"
 }
