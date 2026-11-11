@@ -176,37 +176,45 @@ export default class SetupTransfer extends SfCommand<SetupTransferResult> {
     definition: DefinitionFile,
     data: { metadata: Record<string, unknown>; objects: ExportEntity[] }
   ): MergedPayload {
-    const defEntityMap = new Map<string, DefinitionEntity>();
-    for (const entity of definition.objects.list) {
-      defEntityMap.set(entity.objectName, entity);
+    const dataEntityMap = new Map<string, ExportEntity>();
+    for (const entity of data.objects ?? []) {
+      dataEntityMap.set(entity.objectName, entity);
     }
 
     const importSequence = definition.importSequence?.list ?? [];
     const metadata = data.metadata ?? {};
 
-    const mergedEntities: MergedEntity[] = data.objects.map((dataEntity) => {
-      const defEntity = defEntityMap.get(dataEntity.objectName);
+    // Drive the merge from the definition so that every object declared in the
+    // DefinitionFile is included in the import payload, even when the export
+    // returned no data record for it (records default to an empty array).
+    const mergedEntities: MergedEntity[] = definition.objects.list.map((defEntity) => {
+      const dataEntity = dataEntityMap.get(defEntity.objectName);
 
       const header: MergedEntityHeader = {
-        objectName: dataEntity.objectName,
-        fields: defEntity?.fields ?? '',
-        filterCriteria: defEntity?.filterCriteria ?? '',
-        foreignKeys: defEntity?.foreignKeys?.list ?? [],
+        objectName: defEntity.objectName,
+        fields: defEntity.fields ?? '',
+        filterCriteria: defEntity.filterCriteria ?? '',
+        foreignKeys: defEntity.foreignKeys?.list ?? [],
       };
-      if (defEntity?.globalKeyField) {
+      if (defEntity.globalKeyField) {
         header.globalKeyField = defEntity.globalKeyField;
       }
-      if (defEntity?.compositeKeys?.list) {
+      if (defEntity.compositeKeys?.list) {
         header.compositeKeys = defEntity.compositeKeys.list;
       }
 
       const merged: MergedEntity = {
         header,
-        objectName: dataEntity.objectName,
-        records: dataEntity.records,
+        objectName: defEntity.objectName,
+        records: dataEntity?.records ?? [],
       };
-      if (dataEntity.recordCount != null) {
-        merged.recordCount = dataEntity.recordCount;
+      if (dataEntity) {
+        if (dataEntity.recordCount != null) {
+          merged.recordCount = dataEntity.recordCount;
+        }
+      } else {
+        // The export returned nothing for this object; record an explicit zero count.
+        merged.recordCount = 0;
       }
       return merged;
     });
